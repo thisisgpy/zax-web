@@ -59,6 +59,29 @@ export const asyncRoutes: MenuListType[] = [
     ]
   },
   {
+    id: 900,
+    name: 'Financing',
+    path: '/financing',
+    component: RoutesAlias.Home,
+    meta: {
+      title: '融资管理',
+      icon: '&#xe70e;',
+      keepAlive: false
+    },
+    children: [
+      {
+        id: 90001,
+        path: 'list',
+        name: 'FinancingList',
+        component: '/financing/FinancingList',
+        meta: {
+          title: "台账",
+          keepAlive: true
+        }
+      }
+    ]
+  },
+  {
     id: 5,
     path: '/widgets',
     name: 'Widgets',
