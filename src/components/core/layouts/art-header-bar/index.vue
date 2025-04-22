@@ -27,20 +27,11 @@
           </div>
         </div>
 
-        <!-- 快速入口 -->
-        <ArtFastEnter v-if="width >= 1200" />
-
         <!-- 面包屑 -->
         <ArtBreadcrumb
           v-if="(showCrumbs && isLeftMenu) || (showCrumbs && isDualMenu)"
           :style="{ paddingLeft: !showRefreshButton && !showMenuButton ? '10px' : '0' }"
         />
-
-        <!-- 顶部菜单 -->
-        <ArtHorizontalMenu v-if="isTopMenu" :list="menuList" :width="menuTopWidth" />
-
-        <!-- 混合菜单-顶部 -->
-        <ArtMixedMenu v-if="isTopLeftMenu" :list="menuList" :width="menuTopWidth" />
       </div>
 
       <div class="right">
@@ -75,50 +66,7 @@
             <span class="count notice-btn"></span>
           </div>
         </div>
-        <!-- 聊天 -->
-        <div class="btn-box chat-btn" @click="openChat">
-          <div class="btn chat-button">
-            <i class="iconfont-sys">&#xe89a;</i>
-            <span class="dot"></span>
-          </div>
-        </div>
-        <!-- 语言 -->
-        <div class="btn-box" v-if="showLanguage">
-          <el-dropdown @command="changeLanguage" popper-class="langDropDownStyle">
-            <div class="btn language-btn">
-              <i class="iconfont-sys">&#xe611;</i>
-            </div>
-            <template #dropdown>
-              <el-dropdown-menu>
-                <div v-for="item in languageOptions" :key="item.value" class="lang-btn-item">
-                  <el-dropdown-item
-                    :command="item.value"
-                    :class="{ 'is-selected': locale === item.value }"
-                  >
-                    <span class="menu-txt">{{ item.label }}</span>
-                    <i v-if="locale === item.value" class="iconfont-sys">&#xe621;</i>
-                  </el-dropdown-item>
-                </div>
-              </el-dropdown-menu>
-            </template>
-          </el-dropdown>
-        </div>
-        <!-- 设置 -->
-        <div class="btn-box" @click="openSetting">
-          <el-popover :visible="showSettingGuide" placement="bottom-start" :width="190" :offset="0">
-            <template #reference>
-              <div class="btn setting-btn">
-                <i class="iconfont-sys">&#xe6d0;</i>
-              </div>
-            </template>
-            <template #default>
-              <p
-                >点击这里查看<span :style="{ color: systemThemeColor }"> 主题风格 </span>、
-                <span :style="{ color: systemThemeColor }"> 开启顶栏菜单 </span>等更多配置
-              </p>
-            </template>
-          </el-popover>
-        </div>
+
         <!-- 切换主题 -->
         <div class="btn-box" @click="themeAnimation">
           <div class="btn theme-btn">
@@ -156,14 +104,6 @@
                     <i class="menu-icon iconfont-sys">&#xe734;</i>
                     <span class="menu-txt">{{ $t('topBar.user.userCenter') }}</span>
                   </li>
-                  <li @click="toDocs()">
-                    <i class="menu-icon iconfont-sys" style="font-size: 15px">&#xe828;</i>
-                    <span class="menu-txt">{{ $t('topBar.user.docs') }}</span>
-                  </li>
-                  <li @click="toGithub()">
-                    <i class="menu-icon iconfont-sys">&#xe8d6;</i>
-                    <span class="menu-txt">{{ $t('topBar.user.github') }}</span>
-                  </li>
                   <li @click="lockScreen()">
                     <i class="menu-icon iconfont-sys">&#xe817;</i>
                     <span class="menu-txt">{{ $t('topBar.user.lockScreen') }}</span>
@@ -196,7 +136,6 @@
   import mittBus from '@/utils/mittBus'
   import { useMenuStore } from '@/store/modules/menu'
   import AppConfig from '@/config'
-  import { languageOptions } from '@/language'
   const isWindows = navigator.userAgent.includes('Windows')
   const { locale } = useI18n()
 
@@ -207,10 +146,8 @@
   const {
     showMenuButton,
     showRefreshButton,
-    showLanguage,
     menuOpen,
     showCrumbs,
-    systemThemeColor,
     showSettingGuide,
     menuType,
     isDark,
@@ -219,8 +156,6 @@
 
   const { language, getUserInfo: userInfo } = storeToRefs(userStore)
 
-  const { menuList } = storeToRefs(useMenuStore())
-
   const showNotice = ref(false)
   const notice = ref(null)
   const userMenuPopover = ref()
@@ -228,7 +163,6 @@
   const isLeftMenu = computed(() => menuType.value === MenuTypeEnum.LEFT)
   const isDualMenu = computed(() => menuType.value === MenuTypeEnum.DUAL_MENU)
   const isTopMenu = computed(() => menuType.value === MenuTypeEnum.TOP)
-  const isTopLeftMenu = computed(() => menuType.value === MenuTypeEnum.TOP_LEFT)
 
   import { useCommon } from '@/composables/useCommon'
   import { WEB_LINKS } from '@/utils/links'
@@ -237,10 +171,6 @@
   const { t } = useI18n()
 
   const { width } = useWindowSize()
-
-  const menuTopWidth = computed(() => {
-    return width.value * 0.5
-  })
 
   onMounted(() => {
     initLanguage()
@@ -281,14 +211,6 @@
     router.push(path)
   }
 
-  const toDocs = () => {
-    window.open(WEB_LINKS.DOCS)
-  }
-
-  const toGithub = () => {
-    window.open(WEB_LINKS.GITHUB)
-  }
-
   const toHome = () => {
     router.push(HOME_PAGE)
   }
@@ -316,24 +238,6 @@
     locale.value = language.value
   }
 
-  const changeLanguage = (lang: LanguageEnum) => {
-    if (locale.value === lang) return
-    locale.value = lang
-    userStore.setLanguage(lang)
-    reload(50)
-  }
-
-  const openSetting = () => {
-    mittBus.emit('openSetting')
-
-    // 隐藏设置引导
-    if (showSettingGuide.value) {
-      settingStore.hideSettingGuide()
-    }
-    // 打开设置引导
-    // settingStore.openSettingGuide()
-  }
-
   const openSearchDialog = () => {
     mittBus.emit('openSearchDialog')
   }
@@ -354,10 +258,6 @@
 
   const visibleNotice = () => {
     showNotice.value = !showNotice.value
-  }
-
-  const openChat = () => {
-    mittBus.emit('openChat')
   }
 
   const lockScreen = () => {
