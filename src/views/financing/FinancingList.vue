@@ -1,38 +1,74 @@
 <template>
   <div class="page-content">
-    <div class="header">
-      <h3>基础信息</h3>
-    </div>
     <el-form>
-      <el-form-item label="融资主体">
-        <el-tree-select v-model="entity" filterable :data="data" />
-      </el-form-item>
+      <el-row justify="space-between" :gutter="20">
+        <el-col :lg="6" :md="8" :sm="14" :xs="16">
+          <el-form-item label="融资主体">
+            <el-select v-model="entity" filterable clearable>
+              <el-option 
+                v-for="item in orgs" 
+                :key="item.value" 
+                :label="item.label" 
+                :value="item.value" />
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :lg="6" :md="8" :sm="14" :xs="16">
+          <el-form-item label="金融机构">
+            <el-select v-model="finName" filterable clearable>
+              <el-option 
+                v-for="item in bankList" 
+                :key="item.id" 
+                :label="item.bankName" 
+                :value="item.id" />
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :lg="6" :md="8" :sm="14" :xs="16">
+          <el-form-item label="融资方式">
+            <el-select v-model="finMethod" filterable clearable>
+              <el-option 
+                v-for="item in financingMethod" 
+                :key="item.value" 
+                :label="item.label" 
+                :value="item.value" />
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :lg="6" :md="8" :sm="14" :xs="16">
+          <el-form-item label="融资结构">
+            <el-tree-select v-model="finStructure" filterable clearable :data="financingStructure" />
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row justify="space-between" :gutter="20">
+        <el-col :lg="6" :md="8" :sm="14" :xs="16">
+          <el-form-item label="债务名称">
+            <el-input v-model="debtName" />
+          </el-form-item>
+        </el-col>
+        <el-col :lg="6" :md="8" :sm="14" :xs="16" style="display: flex; justify-content: end">
+          <el-button type="primary">搜索</el-button>
+          <el-button type="primary">重置</el-button>
+        </el-col>
+
+      </el-row>
     </el-form>
   </div>
 </template>
 
 <script setup lang="ts">
-  const data = [{
-    value: 1,
-    label: '成都蜀州城市发展集团有限公司',
-    children: [
-      {
-        value: 2,
-        label: '成都市蜀州兴业实业发展有限公司'
-      },
-      {
-        value: 3,
-        label: '崇州市蜀州交通发展有限公司',
-        children: [
-          {
-            value: 4,
-            label: '崇州市公共交通有限公司'
-          }
-        ]
-      }
-    ]
-  }]
-  let entity = ref('')
+import { orgs } from '@/mock/temp/orgs'
+import { bankList } from '@/mock/temp/bankList'
+import { financingStructure } from '@/mock/temp/financingStructure'
+import { financingMethod } from '@/mock/temp/financingMethod'
+  
+
+  let entity = ref()
+  let finName = ref()
+  let debtName = ref()
+  let finStructure = ref()
+  let finMethod = ref()
 </script>
 
 <style lang="scss" scoped>
