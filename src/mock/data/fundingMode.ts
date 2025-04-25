@@ -1,4 +1,4 @@
-export const financingMethod = reactive(
+export const fundingMode = reactive(
     [
         { "value": "银行贷款", "label": "银行贷款" },
         { "value": "非标融资", "label": "非标融资" },

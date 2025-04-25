@@ -1,4 +1,4 @@
-export const financingStructure = reactive(
+export const capitalStructure = reactive(
     [
         {
             "label": "银行融资",
